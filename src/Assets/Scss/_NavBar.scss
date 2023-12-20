@@ -1,0 +1,107 @@
+.NavBar {
+    min-height: calc(6rem + 10px);
+    margin-bottom: 1rem;
+    z-index: 2;
+
+    .NavBar-Items {
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        position: fixed;
+        max-width: calc(967.5px - 5rem + 20px);
+        width: calc(75vw - 5rem + 20px);
+        transform: translateX(-10px);
+        z-index: 1;
+
+        display: grid;
+        padding-top: 1.5rem;
+        background-color: #fff;
+        margin-bottom: 1.125rem;
+
+        .NavBar-Search {
+            grid-row: 1;
+            position: relative;
+            width: 110%;
+            display: flex;
+            font-size: 16px;
+
+            .NavBar-Search-Header {
+                width: 100%;
+
+                i {
+                    display: inline-flex;
+                    vertical-align: top;
+                    line-height: 1;
+                }
+
+                .Search-Bar {
+                    width: 100%;
+                    border-radius: 60px;
+                    padding: 14px 36px 14px 40px;
+                    border: 1px solid #dcdcdc;
+                    outline-offset: -2px;
+                }
+
+                .Search-Icon {
+                    color: #222;
+                    font-weight: 700;
+                    left: 100%;
+                    transform: translate(-200%, -50%);
+
+                    position: absolute;
+                    top: 50%;
+
+                    ::before {
+                        font-style: normal;
+                        font-weight: 400 !important;
+                        font-feature-settings: normal;
+                        font-variant: normal;
+                        text-transform: none;
+                        line-height: 1;
+                        -webkit-font-smoothing: antialiased;
+                    }
+                }
+            }
+        }
+
+        .NavBar-Checkout {
+            grid-row: 1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.25rem;
+            max-height: 48px;
+
+            .NavBar-Checkout-Text {
+                font-weight: 600;
+                font-size: .857rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .NavBar-Checkout-Button {
+                font-size: 14px;
+                line-height: 100%;
+                display: flex;
+                padding: 0.875rem 1.25rem;
+                background-color: rgba(0, 0, 0, .063);
+                border-radius: 3rem;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
+
+                .NavBar-Checkout-Cart-Icon {
+                    position: relative;
+                    margin-right: 20px;
+                }
+
+                .NavBar-Checkout-Cart-Price {
+                    font-size: 1em;
+                    font-weight: 600;
+                    line-height: 100%;
+                    text-align: left;
+                }
+            }
+        }
+    }
+}
