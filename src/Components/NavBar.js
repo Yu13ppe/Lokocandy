@@ -1,14 +1,29 @@
-import React from 'react'
+import React, {useState} from 'react'
 // import { Input, FormGroup, Button } from 'reactstrap'
-import { IoCartOutline, IoSearch } from "react-icons/io5";
+import { IoCartOutline, IoSearch, IoCloseOutline } from "react-icons/io5";
 
 function NavBar() {
+
+  const [clear, setClear] = useState(true)
+
   return (
     <div className='NavBar'>
       <div className='NavBar-Items'>
+
         <div className='NavBar-Search'>
           <div className='NavBar-Search-Header'>
-            <input className='Search-Bar' type='search' />
+            <i class="search-bar-clear" hidden={clear}>
+              <IoCloseOutline />
+            </i>
+            <input className='Search-Bar' type='text' onChange={
+              (e) => {
+                if (e.target.value === '') {
+                  setClear(true)
+                } else {
+                  setClear(false)
+                }
+              }
+            } />
             <i className='Search-Icon'>
               <IoSearch />
             </i>
@@ -29,7 +44,7 @@ function NavBar() {
           </div>
         </div>
 
-        
+
       </div>
     </div>
   )

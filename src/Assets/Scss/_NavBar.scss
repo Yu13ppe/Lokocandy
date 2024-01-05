@@ -28,6 +28,16 @@
             .NavBar-Search-Header {
                 width: 100%;
 
+                .search-bar-clear {
+                    color: #222;
+                    font-size: 25px;
+                    left: 0;
+                    transform: translate(55%, -50%);
+
+                    position: absolute;
+                    top: 50%;
+                }
+
                 i {
                     display: inline-flex;
                     vertical-align: top;
@@ -51,15 +61,15 @@
                     position: absolute;
                     top: 50%;
 
-                    ::before {
-                        font-style: normal;
-                        font-weight: 400 !important;
-                        font-feature-settings: normal;
-                        font-variant: normal;
-                        text-transform: none;
-                        line-height: 1;
-                        -webkit-font-smoothing: antialiased;
-                    }
+                    // ::before {
+                    //     font-style: normal;
+                    //     font-weight: 400 !important;
+                    //     font-feature-settings: normal;
+                    //     font-variant: normal;
+                    //     text-transform: none;
+                    //     line-height: 1;
+                    //     -webkit-font-smoothing: antialiased;
+                    // }
                 }
             }
         }
