@@ -1,10 +1,10 @@
-import { Home } from '../Pages/Home';
+import { Main } from '../Components/Main';
 
 const Routes = [
     {
         title: '',
         path: '/',
-        component: Home,
+        component: Main,
     }
 ]
 

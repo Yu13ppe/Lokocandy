@@ -1,8 +1,8 @@
 import React from 'react'
-import { NavBar } from '../Components/NavBar'
-import { SideBar } from '../Components/SideBar'
+import { NavBar } from './NavBar'
+import { SideBar } from './SideBar'
 
-function Home() {
+function Main() {
   return (
     <div className='Content'>
       <SideBar />
@@ -15,4 +15,4 @@ function Home() {
   )
 }
 
-export { Home }
+export { Main }
