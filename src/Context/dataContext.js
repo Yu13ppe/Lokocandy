@@ -1,20 +1,38 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { useLocalStorage } from "../Hooks/useLocalStorage";
+import axios from 'axios';
 
 export const DataContext = createContext();
 
 export function DataContextProvider(props) {
-    // const [accessToken, setAccessToken] = useLocalStorage("token", '');
-    // const [accessAdminToken, setAccessAdminToken] = useLocalStorage("130328073103", '');
     const [logged, setLogged] = useLocalStorage('log', false);
-    // const [currencyPrice, setCurrencyPrice] = useLocalStorage('currency', []);
-    // const url = 'https://remesapruebas-production.up.railway.app';
+    const [search, setSearch] = useState('');
+    const url = 'https://lokocandy.up.railway.app';
+    const [products, setProducts] = useState([]);
+
+    const filteredSearch = products.filter((prod) => {
+        const fullName = `${prod.prod_name} ${prod.prod_brand} ${prod.category.cat_name}`.toLowerCase();
+        return fullName.includes(search.toLowerCase());
+      });
+
+    const fetchProducts = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}/products`);
+            setProducts(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [url])
+
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts])
+
     const value = {
-        logged, setLogged 
-        // accessToken, setAccessToken,
-        // accessAdminToken, setAccessAdminToken,
-        // currencyPrice, setCurrencyPrice,
-        // url
+        logged, setLogged,
+        search, setSearch,
+        url,
+        filteredSearch
     };
 
     return (

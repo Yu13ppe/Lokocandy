@@ -1,21 +1,115 @@
-.SiderBar {
+// .SiderBar {
+//     margin-right: 6px;
+//     box-sizing: border-box;
+//     width: 100%;
+//     overflow: clip;
+//     position: relative;
+//     border-right: 1px solid #dcdcdc;
+//     padding: 10px 0 0;
+
+
+//     .SideBar-Items {
+//         font-size: .875rem;
+
+//         display: flex;
+//         flex-direction: row;
+//         flex-wrap: wrap;
+//         align-items: stretch;
+
+//         height: 100%;
+//         background-color: #fff;
+//         justify-content: space-between;
+//         position: relative;
+//         padding: 1rem;
+//         margin: 0;
+//         overflow: hidden;
+//         overflow-y: auto;
+
+//         position: fixed;
+//         max-width: 316.5px;
+//         width: calc(25vw - 6px);
+//         padding-bottom: 2rem;
+//         height: 97vh;
+
+//         @media only screen and (min-width: 1025px) {
+//             padding: 1.25rem 2.5rem;
+//         }
+
+//         .SideBar-Profile {
+//             margin-bottom: 1rem;
+//             flex-direction: column !important;
+//             display: flex !important;
+//             align-content: baseline;
+//             font-family: Inter, sans-serif;
+//             font-weight: 400;
+
+//             position: relative;
+//             display: flex;
+//             flex-direction: row;
+//             flex-wrap: wrap;
+//             justify-content: inherit;
+//             align-items: stretch;
+//             width: 100% !important;
+//             padding: 1rem 0;
+
+
+//             .image {
+//                 position: relative;
+//                 display: inline-block;
+//                 vertical-align: middle;
+//                 max-width: 100%;
+//                 background-color: transparent;
+
+//                 margin-right: 0.25em;
+//                 display: inline-block;
+//                 width: 2em;
+//                 height: 2em;
+//                 border-radius: 500rem;
+//             }
+
+//             img {
+//                 overflow-clip-margin: content-box;
+//                 overflow: clip;
+
+//                 border: 1px solid #e0e0e0;
+
+//                 max-width: 100%;
+//             }
+//         }
+//     }
+// }
+
+.SideBar {
     margin-right: 6px;
     box-sizing: border-box;
     width: 100%;
     overflow: clip;
     position: relative;
     border-right: 1px solid #dcdcdc;
+
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+        overflow: visible;
+        cursor: pointer;
+        -webkit-appearance: none;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #f7048675;
+        border-radius: 10px;
+    }
+
     padding: 10px 0 0;
-    
 
     .SideBar-Items {
         font-size: .875rem;
-
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: stretch;
-
+        flex-direction: column;
         height: 100%;
         background-color: #fff;
         justify-content: space-between;
@@ -24,10 +118,8 @@
         margin: 0;
         overflow: hidden;
         overflow-y: auto;
-
-        position: fixed;
         max-width: 316.5px;
-        width: calc(25vw - 6px);
+        width: 25vw;
         padding-bottom: 2rem;
         height: 97vh;
 
@@ -36,23 +128,14 @@
         }
 
         .SideBar-Profile {
-            margin-bottom: 1rem;
-            flex-direction: column !important;
-            display: flex !important;
-            align-content: baseline;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
             font-family: Inter, sans-serif;
             font-weight: 400;
-
             position: relative;
-            display: flex;
-            flex-direction: row;
             flex-wrap: wrap;
-            justify-content: inherit;
-            align-items: stretch;
-            width: 100% !important;
-            padding: 1rem 0;
-
-            justify-content: flex-start;
+            width: 100%;
 
             .image {
                 position: relative;
@@ -60,22 +143,94 @@
                 vertical-align: middle;
                 max-width: 100%;
                 background-color: transparent;
-
-                margin-right: 0.25em;
-                display: inline-block;
-                width: 2em;
-                height: 2em;
+                width: calc(100% - 1em);
                 border-radius: 500rem;
             }
 
             img {
                 overflow-clip-margin: content-box;
                 overflow: clip;
-
                 border: 1px solid #e0e0e0;
-
                 max-width: 100%;
             }
+        }
+
+        .SideBar-Categories {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            font-family: Inter, sans-serif;
+            position: relative;
+            padding-left: .5rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            width: 100%;
+
+            .category {
+                position: relative;
+                display: inline-block;
+                vertical-align: middle;
+                max-width: 100%;
+                background-color: transparent;
+                display: inline-block;
+                width: calc(100% - 5em);
+                border-radius: 500rem;
+            }
+        }
+
+        .SideBar-Links {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            // align-items: start;
+            font-family: Inter, sans-serif;
+            position: relative;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            width: 100%;
+
+            h5 {
+                font-size: 1.25rem;
+                font-weight: 600;
+                font-size: medium;
+                margin-bottom: 1rem;
+                margin-top: 1rem;
+            }
+
+            section {
+                display: flex;
+                align-items: center;
+                flex-direction: row;
+                position: relative;
+                max-width: 100%;
+                width: calc(100% - 5em);
+                border-radius: 500rem;
+
+                .icon {
+                    margin-right: 10px;
+                    width: 1.5rem;
+                    height: 1.5rem;
+                }
+
+                .content {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .link__item {
+                    margin-bottom: 1rem;
+                }
+            }
+
+            // .link {
+            //     display: flex;
+            //     align-items: center;
+            //     position: relative;
+            //     max-width: 100%;
+            //     width: calc(100% - 5em);
+            //     border-radius: 500rem;
+            // }
+
         }
     }
 }
