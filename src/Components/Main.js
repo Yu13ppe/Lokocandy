@@ -52,14 +52,15 @@ function Main() {
         <div className="cards row m-4">
           {filteredSearch.map(product => (
             <Col className="col" key={product.prod_id}>
-              <Card className='card mt-2'
+              <Card className='card mt-2 mb-2' style={{ borderRadius: '10px', maxWidth: '250px'}}
               // onClick={() => {
               //   setSelectModal(product);
               //   toggle1();
               // }}
               >
                 <CardBody className='text-center'>
-                  <img src={product.prod_img ? product.prod_img : LokoLogo} style={{ borderRadius: '10px' }} width={220} alt={product.prod_name} />
+                    <img src={product.prod_img !== '' ? `https://lokocandy.up.railway.app/products/image/${product.prod_img}` : LokoLogo} style={{ borderRadius: '10px', objectFit: 'cover' }} width={200} height={200} alt={product.prod_name} />
+                  {/* {product.prod_img && <img style={{ width: '100%' }} alt='ImageMovement' src={`https://lokocandy.up.railway.app/products/image/${product.prod_img}`} />} */}
                 </CardBody>
                 <CardFooter>
                   <h5 style={{ color: '#212121', fontWeight: '700', fontSize: '20px' }}>{product.prod_name}</h5>
