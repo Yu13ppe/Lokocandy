@@ -59,7 +59,7 @@ function Main() {
               // }}
               >
                 <CardBody className='text-center'>
-                  <img src={product.prod_img !== '1' ? product.prod_img : LokoLogo} style={{ borderRadius: '10px' }} width={220} alt={product.prod_name} />
+                  <img src={product.prod_img ? product.prod_img : LokoLogo} style={{ borderRadius: '10px' }} width={220} alt={product.prod_name} />
                 </CardBody>
                 <CardFooter>
                   <h5 style={{ color: '#212121', fontWeight: '700', fontSize: '20px' }}>{product.prod_name}</h5>
