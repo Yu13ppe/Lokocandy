@@ -11,43 +11,10 @@ function Main() {
   // const [modal1, setModal1] = useState(false);
   // const toggle1 = () => setModal1(!modal1);
 
-  // const exampleList = [
-  //   {
-  //     id: 1,
-  //     name: 'Papelería',
-  //     price: 4.99
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Viveres',
-  //     price: 9.99
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Sin categoría',
-  //     price: 1.99
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'Papelería',
-  //     price: 4.99
-  //   },
-  //   {
-  //     id: 5,
-  //     name: 'Viveres',
-  //     price: 9.99
-  //   },
-  //   {
-  //     id: 6,
-  //     name: 'Sin categoría',
-  //     price: 1.99
-  //   },
-  // ]
-
   return (
     <div className='Content'>
       <SideBar />
-      <div className='list-product'>
+      <div className='list-product scrollbar'>
         <NavBar />
         <div className="cards row m-4">
           {filteredSearch.map(product => (
@@ -59,7 +26,7 @@ function Main() {
               // }}
               >
                 <CardBody className='text-center'>
-                    <img src={product.prod_img !== null ? `https://lokocandy.up.railway.app/products/image/${product.prod_img}` : LokoLogo} style={{ borderRadius: '10px', objectFit: 'cover' }} width={200} height={200} alt={product.prod_name} />
+                    <img src={product.prod_img !== '' ? `https://lokocandy.up.railway.app/products/image/${product.prod_img}` : LokoLogo} style={{ borderRadius: '10px', objectFit: 'cover' }} width={200} height={200} alt={product.prod_name} />
                   {/* {product.prod_img && <img style={{ width: '100%' }} alt='ImageMovement' src={`https://lokocandy.up.railway.app/products/image/${product.prod_img}`} />} */}
                 </CardBody>
                 <CardFooter>

@@ -9,11 +9,13 @@ export function DataContextProvider(props) {
     const [search, setSearch] = useState('');
     const url = 'https://lokocandy.up.railway.app';
     const [products, setProducts] = useState([]);
+    const [categoriesList, setCategories] = useState([]);
+    const [brandsList, setBrands] = useState([]);
 
     const filteredSearch = products.filter((prod) => {
-        const fullName = `${prod.prod_name} ${prod.prod_brand} ${prod.category.cat_name}`.toLowerCase();
+        const fullName = `${prod.prod_name} ${prod.brand[0].bra_name} ${prod.category[0].cat_name}`.toLowerCase();
         return fullName.includes(search.toLowerCase());
-      });
+    });
 
     const fetchProducts = useCallback(async () => {
         try {
@@ -24,15 +26,37 @@ export function DataContextProvider(props) {
         }
     }, [url])
 
+    const fetchCategories = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}/category`);
+            setCategories(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [url])
+
+    const fetchBrands = useCallback(async () => {
+        try {
+            const response = await axios.get(`${url}/brand`);
+            setBrands(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }, [url])
+
     useEffect(() => {
         fetchProducts();
-    }, [fetchProducts])
+        fetchCategories();
+        fetchBrands();
+    }, [fetchProducts, fetchCategories, fetchBrands])
 
     const value = {
         logged, setLogged,
         search, setSearch,
         url,
-        filteredSearch
+        filteredSearch,
+        categoriesList,
+        brandsList,
     };
 
     return (

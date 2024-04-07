@@ -1,4 +1,4 @@
-.Content{
+.Content {
     width: 100%;
 
     display: grid;
@@ -9,28 +9,56 @@
     height: 100vh;
     min-height: 100vh;
     max-height: 100vh;
+
 }
 
 
 .list-product {
-    overflow: hidden;
-    overflow-y: auto;
+    box-sizing: border-box;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     padding-left: 4px;
-
-    display: flex;
-    // justify-content: space-evenly;
     flex: 1 1;
+    overflow: auto;
+    position: relative;
 
-    overflow: visible;
-    overflow-y: visible;
-    width: auto;
-    height: auto;
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+        overflow: visible;
+        cursor: pointer;
+        -webkit-appearance: none;
+    }
 
-    @media screen and (min-width: 1023px){
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #f7048675;
+        border-radius: 10px;
+    }
+
+    // ::-webkit-scrollbar {
+    //     width: 10px;
+    //     height: 10px;
+    //     overflow: visible;
+    //     cursor: pointer;
+    //     -webkit-appearance: none;
+    // }
+
+    // ::-webkit-scrollbar-track {
+    //     background: transparent;
+    // }
+
+    // ::-webkit-scrollbar-thumb {
+    //     background: #f7048675;
+    //     border-radius: 10px;
+    // }
+
+    @media screen and (min-width: 1023px) {
         padding-left: 2.375rem;
         padding-right: 2.375rem;
     }
