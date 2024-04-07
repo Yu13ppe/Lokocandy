@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import LokoLogo from '../Assets/Images/LokoCandy-Logo.jpg'
 import { Link } from 'react-router-dom'
 import { Input } from 'reactstrap'
