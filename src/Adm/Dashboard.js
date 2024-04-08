@@ -1,18 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import LokoLogo from '../Assets/Images/LokoCandy-Logo.jpg'
 import { useDataContext } from '../Context/dataContext'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, FormGroup } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, FormGroup, Card, Col, CardBody, CardFooter, CardSubtitle } from 'reactstrap';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import { IoMdExit, IoIosList } from "react-icons/io";
+import { IoGridOutline } from "react-icons/io5";
+import { clearLocalStorage } from '../Hooks/useLocalStorage'
 
 function Dashboard() {
-  const { url,access_token, logged, filteredSearch, search, setSearch, categoriesList, brandsList } = useDataContext();
+  const { url, fetchProducts, access_token, logged, filteredSearch, search, setSearch, categoriesList, brandsList } = useDataContext();
   const [user, setUser] = useState({});
   const [table, setTable] = useState('tableView');
   const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+  const toggle = () => { setModal(!modal) };
+  const [activeItem, setActiveItem] = useState('Productos');
+  const [selected, setSelected] = useState(null);
 
-  const fetchUser = useCallback( async () => {
+  const handleClick = (item) => {
+    setActiveItem(item);
+  };
+
+  const fetchUser = useCallback(async () => {
     try {
       const response = await axios.get(`${url}/Auth/findByTokenAdmin/${access_token}`);
       setUser(response.data);
@@ -40,6 +49,33 @@ function Dashboard() {
     setSearch(event.target.value);
   };
 
+  const handleEdit = (product) => {
+    setSelected(product);
+    setModal(true);
+    setProd_name(product.prod_name);
+    setProd_category(product.category && product.category[0].cat_id);
+    setProd_brand(product.brand && product.brand[0].bra_id);
+    setProd_price(product.prod_price);
+    setProd_description(product.prod_desc);
+    setProd_img(product.prod_img);
+  }
+
+  const handleStatus = (product, prop) => {
+    const formData = new FormData();
+    formData.append('prod_status', prop);
+
+    try {
+      axios.put(`${url}/products/update/${product.prod_id}`, formData)
+        .then(() => {
+          toggle();
+          fetchProducts();
+        })
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -52,21 +88,41 @@ function Dashboard() {
     formData.append('prod_status', 'Activo');
 
     try {
-      axios.post(`${url}/products`, formData)
-        .then(() => {
-          // console.log(response);
-          setModal(false);
-          setProd_name('');
-          setProd_category('');
-          setProd_brand('');
-          setProd_price('');
-          setProd_description('');
-          setProd_img('');
-          window.location.reload();
-        })
+      if (selected) {
+        axios.put(`${url}/products/update/${selected.prod_id}`, formData)
+          .then(() => {
+            setModal(false);
+            setProd_name('');
+            setProd_category('');
+            setProd_brand('');
+            setProd_price('');
+            setProd_description('');
+            setProd_img('');
+            setSelected(null);
+            window.location.reload();
+          })
+      } else {
+        axios.post(`${url}/products`, formData)
+          .then(() => {
+            setModal(false);
+            setProd_name('');
+            setProd_category('');
+            setProd_brand('');
+            setProd_price('');
+            setProd_description('');
+            setProd_img('');
+            window.location.reload();
+          })
+      }
     } catch (error) {
-      console.error(error);
+      console.log(error)
     }
+  }
+
+  const clearLocal = () => {
+    clearLocalStorage();
+    clearLocalStorage();
+    window.location.reload();
   }
 
   return (
@@ -77,52 +133,43 @@ function Dashboard() {
 
         {/* Sidebar */}
         <div className="sidebar">
-          <div className="sidebar-header">
-            <div className="app-icon">
-              <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M507.606 371.054a187.217 187.217 0 00-23.051-19.606c-17.316 19.999-37.648 36.808-60.572 50.041-35.508 20.505-75.893 31.452-116.875 31.711 21.762 8.776 45.224 13.38 69.396 13.38 49.524 0 96.084-19.286 131.103-54.305a15 15 0 004.394-10.606 15.028 15.028 0 00-4.395-10.615zM27.445 351.448a187.392 187.392 0 00-23.051 19.606C1.581 373.868 0 377.691 0 381.669s1.581 7.793 4.394 10.606c35.019 35.019 81.579 54.305 131.103 54.305 24.172 0 47.634-4.604 69.396-13.38-40.985-.259-81.367-11.206-116.879-31.713-22.922-13.231-43.254-30.04-60.569-50.039zM103.015 375.508c24.937 14.4 53.928 24.056 84.837 26.854-53.409-29.561-82.274-70.602-95.861-94.135-14.942-25.878-25.041-53.917-30.063-83.421-14.921.64-29.775 2.868-44.227 6.709-6.6 1.576-11.507 7.517-11.507 14.599 0 1.312.172 2.618.512 3.885 15.32 57.142 52.726 100.35 96.309 125.509zM324.148 402.362c30.908-2.799 59.9-12.454 84.837-26.854 43.583-25.159 80.989-68.367 96.31-125.508.34-1.267.512-2.573.512-3.885 0-7.082-4.907-13.023-11.507-14.599-14.452-3.841-29.306-6.07-44.227-6.709-5.022 29.504-15.121 57.543-30.063 83.421-13.588 23.533-42.419 64.554-95.862 94.134zM187.301 366.948c-15.157-24.483-38.696-71.48-38.696-135.903 0-32.646 6.043-64.401 17.945-94.529-16.394-9.351-33.972-16.623-52.273-21.525-8.004-2.142-16.225 2.604-18.37 10.605-16.372 61.078-4.825 121.063 22.064 167.631 16.325 28.275 39.769 54.111 69.33 73.721zM324.684 366.957c29.568-19.611 53.017-45.451 69.344-73.73 26.889-46.569 38.436-106.553 22.064-167.631-2.145-8.001-10.366-12.748-18.37-10.605-18.304 4.902-35.883 12.176-52.279 21.529 11.9 30.126 17.943 61.88 17.943 94.525.001 64.478-23.58 111.488-38.702 135.912zM266.606 69.813c-2.813-2.813-6.637-4.394-10.615-4.394a15 15 0 00-10.606 4.394c-39.289 39.289-66.78 96.005-66.78 161.231 0 65.256 27.522 121.974 66.78 161.231 2.813 2.813 6.637 4.394 10.615 4.394s7.793-1.581 10.606-4.394c39.248-39.247 66.78-95.96 66.78-161.231.001-65.256-27.511-121.964-66.78-161.231z" /></svg>
+          <div className="sidebar-h">
+            <div class="account-info">
+              <div class="account-info-picture">
+                <img src={LokoLogo} alt="Account" />
+              </div>
+              <div class="account-info-name">{user && user.adm_username}</div>
+              <button class="account-info-more" onClick={clearLocal}>
+                <IoMdExit style={{ color: '#212121', fontSize: '20px' }} />
+              </button>
             </div>
           </div>
           <ul className="sidebar-list">
-            <li className="sidebar-list-item">
-              <a href="/Dashboard">
+            <li className={activeItem === 'Home' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => handleClick('Home')}>
+              <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
                 <span>Home</span>
-              </a>
+              </div>
             </li>
-            <li className="sidebar-list-item active">
-              <a href="/Dashboard">
+            <li className={activeItem === 'Productos' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => handleClick('Productos')}>
+              <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-shopping-bag"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
                 <span>Productos</span>
-              </a>
+              </div>
             </li>
-            <li className="sidebar-list-item">
-              <a href="/Dashboard">
+            <li className={activeItem === 'Categorías' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => handleClick('Categorías')}>
+              <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-pie-chart"><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></svg>
-                <span>Statistics</span>
-              </a>
+                <span>Categorías</span>
+              </div>
             </li>
-            <li className="sidebar-list-item">
-              <a href="/Dashboard">
+            <li className={activeItem === 'Marcas' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => handleClick('Marcas')}>
+              <div>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
-                <span>Inbox</span>
-              </a>
-            </li>
-            <li className="sidebar-list-item">
-              <a href="/">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
-                <span>Notifications</span>
-              </a>
+                <span>Marcas</span>
+              </div>
             </li>
           </ul>
-          <div class="account-info">
-            <div class="account-info-picture">
-              <img src={LokoLogo} alt="Account"/>
-            </div>
-            <div class="account-info-name">{user && user.adm_username}</div>
-            <button class="account-info-more">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
-            </button>
-          </div>
         </div>
 
         {/* Content */}
@@ -130,13 +177,25 @@ function Dashboard() {
 
           {/* Header */}
           <div className="app-content-header">
-            <h1 className="app-content-headerText">Productos</h1>
+            <h1 className="app-content-headerText">{activeItem}</h1>
             <button className="app-content-headerButton" onClick={toggle}>Agregar Producto</button>
           </div>
 
           {/* Modal agregar Pordulcto */}
           <Modal centered size='lg' isOpen={modal} toggle={toggle}>
-            <ModalHeader toggle={toggle}>Agregar producto</ModalHeader>
+            <ModalHeader toggle={
+              () => {
+                setModal(false);
+                setProd_name('');
+                setProd_category('');
+                setProd_brand('');
+                setProd_price('');
+                setProd_description('');
+                setProd_img('');
+                setSelected(null);
+              }}>
+              {selected ? 'Editar producto' : 'Agregar Producto'}
+            </ModalHeader>
             <ModalBody>
               <FormGroup className="row">
                 <div className="form-group col-6">
@@ -146,6 +205,7 @@ function Dashboard() {
                     className="form-control"
                     id="productName"
                     name="productName"
+                    defaultValue={prod_name}
                     onChange={(e) => setProd_name(e.target.value)}
                   />
                 </div>
@@ -193,6 +253,7 @@ function Dashboard() {
                     pattern="^\d*(\.\d{0,2})?$"
                     step="any"
                     name="productPrice"
+                    defaultValue={prod_price}
                     onChange={(e) => setProd_price(e.target.value)}
                   />
                 </div>
@@ -205,6 +266,7 @@ function Dashboard() {
                   rows="3"
                   name="productDescription"
                   type="textarea"
+                  defaultValue={prod_description}
                   onChange={(e) => setProd_description(e.target.value)}
                 />
               </div>
@@ -221,10 +283,23 @@ function Dashboard() {
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button color="success" onClick={handleSubmit}>
-                Agregar
+              {selected && selected.prod_status === 'Activo' ? <Button onClick={() => handleStatus(selected, 'Inactivo')} color='danger' outline> Desactivar </Button> : <Button onClick={() => handleStatus(selected, 'Activo')} color='success' outline> Activar </Button>}
+              <Button color={selected ? 'warning' : 'success'} onClick={handleSubmit}>
+                {selected ? 'Editar' : 'Agregar'}
               </Button>
-              <Button color="secondary" onClick={toggle}>
+              <Button color="secondary"
+                onClick={
+                  () => {
+                    setModal(false);
+                    setProd_name('');
+                    setProd_category('');
+                    setProd_brand('');
+                    setProd_price('');
+                    setProd_description('');
+                    setProd_img('');
+                    setSelected(null);
+                  }
+                }>
                 Cancelar
               </Button>
             </ModalFooter>
@@ -232,7 +307,10 @@ function Dashboard() {
 
           {/* Nav */}
           <div className="app-content-actions">
-            <input className="search-bar" placeholder="Buscar producto..." type="text" value={search} onChange={(e) => { handleSearch(e) }} />
+            <input className="search-bar"
+              placeholder={`Buscar ${activeItem}...`}
+              type="text" value={search}
+              onChange={(e) => { handleSearch(e) }} />
             <div className="app-content-actions-wrapper">
               <div className="filter-button-wrapper">
                 <button className="action-button filter jsFilter"><span>Filter</span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-filter"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" /></svg></button>
@@ -262,13 +340,41 @@ function Dashboard() {
                 </div>
               </div>
               <button className="action-button list active" title="List View" onClick={toggleTable}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-list"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+                {table === 'tableView' ? <IoIosList style={{ color: '#212121', fontSize: '20px' }} /> : <IoGridOutline style={{ color: '#212121', fontSize: '20px' }} />}
               </button>
             </div>
           </div>
 
+          {/* Products Main */}
+          {activeItem === 'Home' && <div className="cards row m-4">
+            {filteredSearch.map(product => (
+              <Col className="col" key={product.prod_id}>
+                <Card className='card mt-2 mb-2' style={{ borderRadius: '10px', maxWidth: '250px' }}
+                // onClick={() => {
+                //   setSelectModal(product);
+                //   toggle1();
+                // }}
+                >
+                  <CardBody className='text-center'>
+                    <img src={product.prod_img !== '' ? `https://lokocandy.up.railway.app/products/image/${product.prod_img}` : LokoLogo} style={{ borderRadius: '10px', objectFit: 'cover' }} width={200} height={200} alt={product.prod_name} />
+                    {/* {product.prod_img && <img style={{ width: '100%' }} alt='ImageMovement' src={`https://lokocandy.up.railway.app/products/image/${product.prod_img}`} />} */}
+                  </CardBody>
+                  <CardFooter>
+                    <h5 style={{ color: '#212121', fontWeight: '700', fontSize: '20px' }}>{product.prod_name}</h5>
+                    {/* <CardSubtitle>
+                    {product.prod_desc}
+                  </CardSubtitle> */}
+                    <CardSubtitle style={{ color: '#426B1F', fontWeight: '500', fontSize: '20px' }}>
+                      ${product.prod_price}
+                    </CardSubtitle>
+                  </CardFooter>
+                </Card>
+              </Col>
+            ))}
+          </div>}
+
           {/* Products */}
-          <div className={`products-area-wrapper ${table}`}>
+          {activeItem === 'Productos' && <div className={`products-area-wrapper ${table}`}>
             <div className="products-header">
               <div className="product-cell image">
                 Producto
@@ -291,7 +397,7 @@ function Dashboard() {
             </div>
 
             {filteredSearch.map((product, index) => (
-              <div className="products-row" key={index}>
+              <div className="products-row" onClick={() => handleEdit(product)} key={index}>
                 <div className="product-cell image">
                   <img src={product.prod_img !== '' ? `https://lokocandy.up.railway.app/products/image/${product.prod_img}` : LokoLogo} alt={product.prod_name} />
                   <span>{product.prod_name}</span>
@@ -305,8 +411,68 @@ function Dashboard() {
                 <div className="product-cell price"><span className="cell-label">Precio:</span>${product.prod_price}</div>
               </div>
             ))}
+          </div>}
 
-          </div>
+          {/* Categories */}
+          {activeItem === 'Categorías' && <div className={`products-area-wrapper ${table}`}>
+            <div className="products-header">
+              <div className="product-cell image">
+                Categoría
+                <button className="sort-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+                </button>
+              </div>
+              <div className="product-cell category">Cantidad<button className="sort-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+              </button></div>
+            </div>
+
+            {categoriesList.map((cat, index) => (
+              <div className="products-row" key={index}>
+                <div className="product-cell image">
+                  <img src={LokoLogo} alt={cat.cat_name} />
+                  <span> {cat.cat_name}</span>
+                </div>
+                {
+                  (() => {
+                    const productsInCategory = filteredSearch.filter(product => product.category[0].cat_id === cat.cat_id);
+                    return <div className="product-cell category"><span className="cell-label">Cantidad:</span>{productsInCategory.length}</div>
+                  })()
+                }
+              </div>
+            ))}
+          </div>}
+
+          {/* Brands */}
+          {activeItem === 'Marcas' && <div className={`products-area-wrapper ${table}`}>
+            <div className="products-header">
+              <div className="product-cell image">
+                Marca
+                <button className="sort-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+                </button>
+              </div>
+              <div className="product-cell category">Cantidad<button className="sort-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+              </button></div>
+            </div>
+
+            {brandsList.map((brand, index) => (
+              <div className="products-row" key={index}>
+                <div className="product-cell image">
+                  <img src={LokoLogo} alt={brand.bra_name} />
+                  <span> {brand.bra_name}</span>
+                </div>
+                {
+                  (() => {
+                    const productsInBrand = filteredSearch.filter(product => product.brand[0].bra_id === brand.bra_id);
+                    return <div className="product-cell brand"><span className="cell-label">Cantidad:</span>{productsInBrand.length}</div>
+                  })()
+                }
+              </div>
+            ))}
+          </div>}
+
         </div>
       </div>)
   )

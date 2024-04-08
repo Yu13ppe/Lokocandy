@@ -14,7 +14,7 @@ export function DataContextProvider(props) {
     const [brandsList, setBrands] = useState([]);
 
     const filteredSearch = products.filter((prod) => {
-        const fullName = `${prod.prod_name} ${prod.brand[0].bra_name} ${prod.category[0].cat_name}`.toLowerCase();
+        const fullName = `${prod.prod_name} ${prod.brand && prod.brand.bra_name} ${prod.category && prod.category.cat_name}`.toLowerCase();
         return fullName.includes(search.toLowerCase());
     });
 
@@ -56,6 +56,7 @@ export function DataContextProvider(props) {
         search, setSearch,
         url,
         filteredSearch,
+        fetchProducts,
         categoriesList,
         brandsList,
         access_token, setAccessAdminToken

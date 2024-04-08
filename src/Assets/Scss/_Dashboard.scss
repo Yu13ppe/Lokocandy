@@ -82,7 +82,7 @@ body {
   position: relative;
   margin-bottom: 4px;
 }
-.sidebar-list-item a {
+.sidebar-list-item div {
   display: flex;
   align-items: center;
   width: 100%;
@@ -91,6 +91,8 @@ body {
   text-decoration: none;
   font-size: 14px;
   line-height: 24px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 .sidebar-list-item svg {
   margin-right: 8px;

@@ -22,7 +22,7 @@ function LokAdm() {
   const fetchData = async (email, password) => {
     try {
       const response = await axios.get(`${url}/Auth/loginAdmin/${email}/${password}`);
-      setAccessAdminToken(response.data.data);
+      setAccessAdminToken(response.data.data.access_token);
       const response2 = await axios.get(`${url}/Auth/findByTokenAdmin/${response.data.data.access_token}`);
       setTkn(response2.data);
       setLogged(true);
