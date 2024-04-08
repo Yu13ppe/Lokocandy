@@ -16,7 +16,7 @@ function LokAdm() {
   const [tkn, setTkn] = useState('');
   const [error, setError] = useState("");
   const [attemps, setAttemps] = useState(3);
-  const { setLogged, setAccessAdminToken, url } = useDataContext();
+  const {setLogged, setAccessAdminToken, url } = useDataContext();
   const [alertVisible, setAlertVisible] = useState(false);
 
   const fetchData = async (email, password) => {
