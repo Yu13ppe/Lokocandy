@@ -98,8 +98,8 @@ function Dashboard() {
     setSelected(product);
     setModal(true);
     setProd_name(product.prod_name);
-    setProd_category(product.category && product.category[0].cat_id);
-    setProd_brand(product.brand && product.brand[0].bra_id);
+    setProd_category(product.category && product.category.cat_id);
+    setProd_brand(product.brand && product.brand.bra_id);
     setProd_price(product.prod_price);
     setProd_description(product.prod_desc);
     setProd_img(product.prod_img);
