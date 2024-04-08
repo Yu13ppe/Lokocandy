@@ -333,7 +333,7 @@ function Dashboard() {
               </div>
             </ModalBody>
             <ModalFooter>
-              {selected && selected.prod_status === 'Activo' ? <Button onClick={() => handleStatus(selected, 'Inactivo')} color='danger' outline> Desactivar </Button> : <Button onClick={() => handleStatus(selected, 'Activo')} color='success' outline> Activar </Button>}
+              {selected && selected.prod_status === 'Activo' ? <Button onClick={() => handleStatus(selected, 'Inactivo')} color='danger' outline> Desactivar </Button> : selected && selected.prod_status === 'Inactivo'? <Button onClick={() => handleStatus(selected, 'Activo')} color='success' outline> Activar </Button>: null}
               <Button color={selected ? 'warning' : 'success'} onClick={handleSubmit}>
                 {selected ? 'Editar' : 'Agregar'}
               </Button>
