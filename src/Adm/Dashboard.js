@@ -9,13 +9,64 @@ import { IoGridOutline } from "react-icons/io5";
 import { clearLocalStorage } from '../Hooks/useLocalStorage'
 
 function Dashboard() {
-  const { url, fetchProducts, access_token, logged, filteredSearch, search, setSearch, categoriesList, brandsList } = useDataContext();
+  const { url, fetchProducts, fetchCategories, fetchBrands, access_token, logged, filteredSearch, search, setSearch, categoriesList, brandsList } = useDataContext();
   const [user, setUser] = useState({});
   const [table, setTable] = useState('tableView');
   const [modal, setModal] = useState(false);
   const toggle = () => { setModal(!modal) };
   const [activeItem, setActiveItem] = useState('Productos');
   const [selected, setSelected] = useState(null);
+
+  const [prod_name, setProd_name] = useState('');
+  const [category_id, setProd_category] = useState('');
+  const [brand_id, setProd_brand] = useState('');
+  const [prod_price, setProd_price] = useState('');
+  const [prod_description, setProd_description] = useState('');
+  const [prod_img, setProd_img] = useState('');
+
+  const [cat_name, setCat_name] = useState('');
+
+  const [bra_name, setBrand_name] = useState('');
+
+  const [addCategory, setAddCategory] = useState(false);
+
+  const [addBrand, setAddBrand] = useState(false);
+
+  const toggleCategory = () => {
+    setAddCategory(!addCategory);
+  }
+
+  const toggleBrand = () => {
+    setAddBrand(!addBrand);
+  }
+
+  const handleSubmitCategory = () => {
+    try {
+      axios.post(`${url}/category`,
+        { cat_name: cat_name }
+      )
+        .then(() => {
+          setCat_name('');
+          fetchCategories();
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleSubmitBrand = () => {
+    try {
+      axios.post(`${url}/brand`,
+        { bra_name: bra_name }
+      )
+        .then(() => {
+          setBrand_name('');
+          fetchBrands();
+        })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleClick = (item) => {
     setActiveItem(item);
@@ -34,12 +85,6 @@ function Dashboard() {
     fetchUser();
   }, [fetchUser])
 
-  const [prod_name, setProd_name] = useState('');
-  const [category_id, setProd_category] = useState('');
-  const [brand_id, setProd_brand] = useState('');
-  const [prod_price, setProd_price] = useState('');
-  const [prod_description, setProd_description] = useState('');
-  const [prod_img, setProd_img] = useState('');
 
   const toggleTable = () => {
     table === 'tableView' ? setTable('gridView') : setTable('tableView');
@@ -178,7 +223,12 @@ function Dashboard() {
           {/* Header */}
           <div className="app-content-header">
             <h1 className="app-content-headerText">{activeItem}</h1>
-            <button className="app-content-headerButton" onClick={toggle}>Agregar Producto</button>
+            <Button
+              className="app-content-headerButton"
+              hidden={activeItem === 'Categorías' || activeItem === 'Marcas'? true : false}
+              onClick={toggle}
+            >Agregar {activeItem === 'Home' ? 'Productos' : activeItem}
+            </Button>
           </div>
 
           {/* Modal agregar Pordulcto */}
@@ -361,10 +411,10 @@ function Dashboard() {
                   </CardBody>
                   <CardFooter>
                     <h5 style={{ color: '#212121', fontWeight: '700', fontSize: '20px' }}>{product.prod_name}</h5>
-                    {/* <CardSubtitle>
-                    {product.prod_desc}
-                  </CardSubtitle> */}
-                    <CardSubtitle style={{ color: '#426B1F', fontWeight: '500', fontSize: '20px' }}>
+                    <CardSubtitle style={{ color: '#454545', fontSize: '12px' }}>
+                      {product.prod_desc}
+                    </CardSubtitle>
+                    <CardSubtitle style={{ color: '#426B1F', fontWeight: '500', fontSize: '18px' }}>
                       ${product.prod_price}
                     </CardSubtitle>
                   </CardFooter>
@@ -414,64 +464,111 @@ function Dashboard() {
           </div>}
 
           {/* Categories */}
-          {activeItem === 'Categorías' && <div className={`products-area-wrapper ${table}`}>
-            <div className="products-header">
-              <div className="product-cell image">
-                Categoría
-                <button className="sort-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
-                </button>
-              </div>
-              <div className="product-cell category">Cantidad<button className="sort-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
-              </button></div>
-            </div>
-
-            {categoriesList.map((cat, index) => (
-              <div className="products-row" key={index}>
+          {activeItem === 'Categorías' &&
+            <div className={`products-area-wrapper tableView`}>
+              <div className="products-header">
                 <div className="product-cell image">
-                  <img src={LokoLogo} alt={cat.cat_name} />
-                  <span> {cat.cat_name}</span>
+                  Categoría
+                  <button className="sort-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+                  </button>
                 </div>
-                {
-                  (() => {
-                    const productsInCategory = filteredSearch.filter(product => product.category[0].cat_id === cat.cat_id);
-                    return <div className="product-cell category"><span className="cell-label">Cantidad:</span>{productsInCategory.length}</div>
-                  })()
-                }
+                <div className="product-cell category">Cantidad<button className="sort-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+                </button></div>
               </div>
-            ))}
-          </div>}
+
+              {categoriesList.map((cat, index) => (
+                <div className="products-row" key={index}>
+                  <div className="product-cell image">
+                    <img src={LokoLogo} alt={cat.cat_name} />
+                    <span> {cat.cat_name}</span>
+                  </div>
+                  {
+                    (() => {
+                      const productsInCategory = filteredSearch.filter(product => product.category[0].cat_id === cat.cat_id);
+                      return <div className="product-cell category"><span className="cell-label">Cantidad:</span>{productsInCategory.length}</div>
+                    })()
+                  }
+                </div>
+              ))}
+
+              <div class="products-row">
+                <div class="product-cell image">
+                  {/* <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8a2l0Y2hlbnxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60" alt="product"> */}
+                  <span><Button color='secondary' style={{ marginRight: '1rem' }} onClick={toggleCategory}>+</Button></span>
+                  {addCategory &&
+                    <Input
+                      type="text"
+                      placeholder="Agregar categoría"
+                      defaultValue={cat_name}
+                      onChange={(e) => setCat_name(e.target.value)}
+                      style={{ marginRight: '1rem' }} />
+                  }
+                  {addCategory &&
+                    <Button color='success'
+                      disabled={cat_name === ''}
+                      onClick={handleSubmitCategory}
+                    >Agregar
+                    </Button>}
+                </div>
+                <div class="product-cell category"><span class="cell-label"></span></div>
+              </div>
+            </div>
+          }
 
           {/* Brands */}
-          {activeItem === 'Marcas' && <div className={`products-area-wrapper ${table}`}>
-            <div className="products-header">
-              <div className="product-cell image">
-                Marca
-                <button className="sort-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
-                </button>
-              </div>
-              <div className="product-cell category">Cantidad<button className="sort-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
-              </button></div>
-            </div>
-
-            {brandsList.map((brand, index) => (
-              <div className="products-row" key={index}>
+          {activeItem === 'Marcas' &&
+            <div className={`products-area-wrapper tableView`}>
+              <div className="products-header">
                 <div className="product-cell image">
-                  <img src={LokoLogo} alt={brand.bra_name} />
-                  <span> {brand.bra_name}</span>
+                  Marca
+                  <button className="sort-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+                  </button>
                 </div>
-                {
-                  (() => {
-                    const productsInBrand = filteredSearch.filter(product => product.brand[0].bra_id === brand.bra_id);
-                    return <div className="product-cell brand"><span className="cell-label">Cantidad:</span>{productsInBrand.length}</div>
-                  })()
-                }
+                <div className="product-cell category">Cantidad<button className="sort-button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512"><path fill="currentColor" d="M496.1 138.3L375.7 17.9c-7.9-7.9-20.6-7.9-28.5 0L226.9 138.3c-7.9 7.9-7.9 20.6 0 28.5 7.9 7.9 20.6 7.9 28.5 0l85.7-85.7v352.8c0 11.3 9.1 20.4 20.4 20.4 11.3 0 20.4-9.1 20.4-20.4V81.1l85.7 85.7c7.9 7.9 20.6 7.9 28.5 0 7.9-7.8 7.9-20.6 0-28.5zM287.1 347.2c-7.9-7.9-20.6-7.9-28.5 0l-85.7 85.7V80.1c0-11.3-9.1-20.4-20.4-20.4-11.3 0-20.4 9.1-20.4 20.4v352.8l-85.7-85.7c-7.9-7.9-20.6-7.9-28.5 0-7.9 7.9-7.9 20.6 0 28.5l120.4 120.4c7.9 7.9 20.6 7.9 28.5 0l120.4-120.4c7.8-7.9 7.8-20.7-.1-28.5z" /></svg>
+                </button></div>
               </div>
-            ))}
-          </div>}
+
+              {brandsList.map((brand, index) => (
+                <div className="products-row" key={index}>
+                  <div className="product-cell image">
+                    <img src={LokoLogo} alt={brand.bra_name} />
+                    <span> {brand.bra_name}</span>
+                  </div>
+                  {
+                    (() => {
+                      const productsInBrand = filteredSearch.filter(product => product.brand[0].bra_id === brand.bra_id);
+                      return <div className="product-cell brand"><span className="cell-label">Cantidad:</span>{productsInBrand.length}</div>
+                    })()
+                  }
+                </div>
+              ))}
+              <div class="products-row">
+                <div class="product-cell image">
+                  {/* <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8a2l0Y2hlbnxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60" alt="product"> */}
+                  <span><Button color='secondary' style={{ marginRight: '1rem' }} onClick={toggleBrand}>+</Button></span>
+                  {addBrand &&
+                    <Input
+                      type="text"
+                      placeholder="Agregar marca"
+                      defaultValue={bra_name}
+                      onChange={(e) => setBrand_name(e.target.value)}
+                      style={{ marginRight: '1rem' }} />
+                  }
+                  {addBrand &&
+                    <Button color='success'
+                      disabled={bra_name === ''}
+                      onClick={handleSubmitBrand}
+                    >Agregar
+                    </Button>}
+                </div>
+                <div class="product-cell category"><span class="cell-label"></span></div>
+              </div>
+            </div>
+          }
 
         </div>
       </div>)
