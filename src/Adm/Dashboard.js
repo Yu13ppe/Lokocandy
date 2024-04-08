@@ -333,7 +333,7 @@ function Dashboard() {
               </div>
             </ModalBody>
             <ModalFooter>
-              {selected && selected.prod_status === 'Activo' ? <Button onClick={() => handleStatus(selected, 'Inactivo')} color='danger' outline> Desactivar </Button> : selected && selected.prod_status === 'Inactivo'? <Button onClick={() => handleStatus(selected, 'Activo')} color='success' outline> Activar </Button>: null}
+              {selected && selected.prod_status === 'Activo' ? <Button onClick={() => handleStatus(selected, 'Inactivo')} color='danger' outline> Desactivar </Button> : <Button onClick={() => handleStatus(selected, 'Activo')} color='success' outline> Activar </Button>}
               <Button color={selected ? 'warning' : 'success'} onClick={handleSubmit}>
                 {selected ? 'Editar' : 'Agregar'}
               </Button>
@@ -486,7 +486,7 @@ function Dashboard() {
                   </div>
                   {
                     (() => {
-                      const productsInCategory = filteredSearch.filter(product => product.category[0].cat_id === cat.cat_id);
+                      const productsInCategory = filteredSearch.filter(product => product.category.cat_id === cat.cat_id);
                       return <div className="product-cell category"><span className="cell-label">Cantidad:</span>{productsInCategory.length}</div>
                     })()
                   }
@@ -540,7 +540,7 @@ function Dashboard() {
                   </div>
                   {
                     (() => {
-                      const productsInBrand = filteredSearch.filter(product => product.brand[0].bra_id === brand.bra_id);
+                      const productsInBrand = filteredSearch.filter(product => product.brand.bra_id === brand.bra_id);
                       return <div className="product-cell brand"><span className="cell-label">Cantidad:</span>{productsInBrand.length}</div>
                     })()
                   }
