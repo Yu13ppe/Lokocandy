@@ -347,7 +347,7 @@ function Dashboard() {
 
           {/* Products Main */}
           {activeItem === 'Home' && <div className="cards row m-4">
-            {filteredSearch.map(product => (
+            {filteredSearch.filter(prod => prod.prod_status === 'Activo').map(product => (
               <Col className="col" key={product.prod_id}>
                 <Card className='card mt-2 mb-2' style={{ borderRadius: '10px', maxWidth: '250px' }}
                 // onClick={() => {
