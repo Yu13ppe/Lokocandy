@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import LokoC from '../Assets/Images/Loko-C.png'
 import { IoCartOutline, IoSearch, IoCloseOutline } from "react-icons/io5";
 import { useDataContext } from '../Context/dataContext'
 
@@ -13,6 +14,15 @@ function NavBar() {
   return (
     <div className='NavBar'>
       <div className='NavBar-Items'>
+
+        <div className='NavBar-Logo'>
+          <img
+            src={LokoC}
+            alt='LokoCandy'
+            className='NavBar-Logo-Image'
+          />
+        </div>
+
         <div className='NavBar-Search'>
           <div className='NavBar-Search-Header'>
             <i
@@ -46,6 +56,7 @@ function NavBar() {
             </i>
           </div>
         </div>
+
 
         <div className='NavBar-Checkout'>
           <div className='NavBar-Checkout-Text'>

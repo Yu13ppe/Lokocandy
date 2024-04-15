@@ -548,7 +548,6 @@ function Dashboard() {
               ))}
               <div class="products-row">
                 <div class="product-cell image">
-                  {/* <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8a2l0Y2hlbnxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60" alt="product"> */}
                   <span><Button color='secondary' style={{ marginRight: '1rem' }} onClick={toggleBrand}>+</Button></span>
                   {addBrand &&
                     <Input

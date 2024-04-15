@@ -17,11 +17,24 @@
         padding-top: 1.5rem;
         background-color: #fff;
         margin-bottom: 1.125rem;
+        
+        .NavBar-Logo {
+            grid-row: 1;
+            display: flex;
+            position: relative;
+            justify-content: flex-start;
+            gap: 1rem;
+            max-height: 48px;
 
+            img {
+                max-height: 100%;
+            }
+        }
+        
         .NavBar-Search {
             grid-row: 1;
             position: relative;
-            width: 110%;
+            width: 100%;
             display: flex;
             font-size: 16px;
 
@@ -60,16 +73,6 @@
 
                     position: absolute;
                     top: 50%;
-
-                    // ::before {
-                    //     font-style: normal;
-                    //     font-weight: 400 !important;
-                    //     font-feature-settings: normal;
-                    //     font-variant: normal;
-                    //     text-transform: none;
-                    //     line-height: 1;
-                    //     -webkit-font-smoothing: antialiased;
-                    // }
                 }
             }
         }
@@ -78,7 +81,7 @@
             grid-row: 1;
             display: flex;
             justify-content: flex-end;
-            gap: 1.25rem;
+            gap: 1rem;
             max-height: 48px;
 
             .NavBar-Checkout-Text {
@@ -111,6 +114,62 @@
                     line-height: 100%;
                     text-align: left;
                 }
+            }
+        }
+
+        
+
+        @media screen and (max-width: 769px) {
+            max-width: 100%;
+            width: 100%;
+            grid-template-columns: .33fr 1.66fr .33fr;
+
+            .NavBar-Logo-Image {
+                grid-row: 1;
+                display: flex;
+                gap: 1.25rem;
+                max-height: 48px;
+                padding-left: 1em;
+            }
+
+            .NavBar-Search {
+                padding-left: 1em;
+
+                .NavBar-Search-Header {
+                    .search-bar-clear {
+                        color: #222;
+                        font-size: 25px;
+                        transform: translate(100%, -50%);
+    
+                        position: absolute;
+                        top: 50%;
+                    }
+                }
+            }
+
+            .NavBar-Checkout {
+                .NavBar-Checkout-Text {
+                    display: none;
+                }
+                margin-left: 1em;
+
+                .NavBar-Checkout-Button {
+                    padding: 0.5em 1em;
+
+                    .NavBar-Checkout-Cart-Icon {
+                        margin-right: 0;
+                    }
+
+                    .NavBar-Checkout-Cart-Price {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        @media screen and (min-width: 770px) {
+            .NavBar-Logo-Image {
+                display: none;
             }
         }
     }
