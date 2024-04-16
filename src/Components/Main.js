@@ -16,6 +16,14 @@ function Main() {
     }
   }, [filteredSearch]);
 
+  function truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength - 3) + '...';
+    } else {
+      return text;
+    }
+  }
+
   return (
     <div className='Content'>
       <SideBar />
@@ -24,7 +32,7 @@ function Main() {
         <div className="cards row m-4">
           {isLoading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'start', height: '100vh' }}>
-              <img src={LokoC} alt="Loading..." style={{animation: 'fade 1s infinite'}}/>
+              <img src={LokoC} alt="Loading..." style={{ animation: 'fade 1s infinite' }} />
             </div>
           ) : (
             filteredSearch.filter(prod => prod.prod_status === 'Activo').map(product => (
@@ -33,10 +41,10 @@ function Main() {
                   <CardBody className='text-center'>
                     <img src={product.prod_img !== '' ? `https://lokocandy.up.railway.app/products/image/${product.prod_img}` : LokoLogo} style={{ borderRadius: '10px', objectFit: 'cover' }} width={200} height={200} alt={product.prod_name} />
                   </CardBody>
-                  <CardFooter>
-                    <h5 style={{ color: '#212121', fontWeight: '700', fontSize: '20px' }}>{product.prod_name}</h5>
+                  <CardFooter className='card-footer'>
+                    <h5 style={{ color: '#212121', fontWeight: '700' }}>{product.prod_name}</h5>
                     <CardSubtitle style={{ color: '#454545', fontSize: '12px' }}>
-                      {product.prod_desc}
+                      {product.prod_desc ? truncateText(product.prod_desc, 18) : '...'}
                     </CardSubtitle>
                     <CardSubtitle style={{ color: '#426B1F', fontWeight: '500', fontSize: '20px' }}>
                       ${product.prod_price}

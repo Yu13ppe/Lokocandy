@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import LokoLogo from '../Assets/Images/LokoCandy-Logo.jpg'
 import { useDataContext } from '../Context/dataContext'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, FormGroup, Card, Col, CardBody, CardFooter, CardSubtitle } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Label, Input, FormGroup, Card, Col, CardBody, CardFooter, CardSubtitle, Offcanvas, OffcanvasBody, OffcanvasHeader } from 'reactstrap';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { IoMdExit, IoIosList } from "react-icons/io";
 import { IoGridOutline } from "react-icons/io5";
+import { FaBars } from "react-icons/fa";
 import { clearLocalStorage } from '../Hooks/useLocalStorage'
 
 function Dashboard() {
@@ -16,6 +17,10 @@ function Dashboard() {
   const toggle = () => { setModal(!modal) };
   const [activeItem, setActiveItem] = useState('Productos');
   const [selected, setSelected] = useState(null);
+  const [sidebar, setSidebar] = useState(false);
+
+  const showSidebar = () => setSidebar(!sidebar);
+
 
   const [prod_name, setProd_name] = useState('');
   const [category_id, setProd_category] = useState('');
@@ -170,6 +175,14 @@ function Dashboard() {
     window.location.reload();
   }
 
+  function truncateText(text, maxLength) {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength - 3) + '...';
+    } else {
+      return text;
+    }
+  }
+
   return (
     !logged ? (
       <Redirect to="/" />
@@ -222,14 +235,72 @@ function Dashboard() {
 
           {/* Header */}
           <div className="app-content-header">
+            <div className='bars' onClick={showSidebar}>
+              <FaBars />
+            </div>
             <h1 className="app-content-headerText">{activeItem}</h1>
             <Button
               className="app-content-headerButton"
-              hidden={activeItem === 'Categorías' || activeItem === 'Marcas'? true : false}
+              hidden={activeItem === 'Categorías' || activeItem === 'Marcas' ? true : false}
               onClick={toggle}
             >Agregar {activeItem === 'Home' ? 'Productos' : activeItem}
             </Button>
           </div>
+
+          {/* SideBar -> 1024px */}
+          <Offcanvas isOpen={sidebar} toggle={() => setSidebar(showSidebar)}>
+            <OffcanvasHeader toggle={() => showSidebar()}>
+              <div class="account-info">
+                <div style={{ width: '50px', height: '50px' }} class="account-info-picture">
+                  <img src={LokoLogo} alt="Account" />
+                </div>
+                <div class="account-info-name">{user && user.adm_username}</div>
+                <button class="account-info-more" onClick={clearLocal}>
+                  <IoMdExit style={{ color: '#212121', fontSize: '20px' }} />
+                </button>
+              </div>
+            </OffcanvasHeader>
+            <OffcanvasBody>
+              <ul className="sidebar-list">
+                <li className={activeItem === 'Home' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => {
+                  handleClick('Home');
+                  setSidebar(!sidebar);
+                }}>
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+                    <span>Home</span>
+                  </div>
+                </li>
+                <li className={activeItem === 'Productos' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => {
+                  handleClick('Productos');
+                  setSidebar(!sidebar);
+                }}>
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-shopping-bag"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" /></svg>
+                    <span>Productos</span>
+                  </div>
+                </li>
+                <li className={activeItem === 'Categorías' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => {
+                  handleClick('Categorías');
+                  setSidebar(!sidebar);
+                }}>
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-pie-chart"><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></svg>
+                    <span>Categorías</span>
+                  </div>
+                </li>
+                <li className={activeItem === 'Marcas' ? "sidebar-list-item active" : "sidebar-list-item"} onClick={() => {
+                  handleClick('Marcas');
+                  setSidebar(!sidebar);
+                }}>
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
+                    <span>Marcas</span>
+                  </div>
+                </li>
+              </ul>
+            </OffcanvasBody>
+          </Offcanvas>
 
           {/* Modal agregar Pordulcto */}
           <Modal centered size='lg' isOpen={modal} toggle={toggle}>
@@ -399,22 +470,16 @@ function Dashboard() {
           {activeItem === 'Home' && <div className="cards row m-4">
             {filteredSearch.filter(prod => prod.prod_status === 'Activo').map(product => (
               <Col className="col" key={product.prod_id}>
-                <Card className='card mt-2 mb-2' style={{ borderRadius: '10px', maxWidth: '250px' }}
-                // onClick={() => {
-                //   setSelectModal(product);
-                //   toggle1();
-                // }}
-                >
+                <Card className='card mt-2 mb-2' style={{ borderRadius: '10px' }}>
                   <CardBody className='text-center'>
                     <img src={product.prod_img !== '' ? `https://lokocandy.up.railway.app/products/image/${product.prod_img}` : LokoLogo} style={{ borderRadius: '10px', objectFit: 'cover' }} width={200} height={200} alt={product.prod_name} />
-                    {/* {product.prod_img && <img style={{ width: '100%' }} alt='ImageMovement' src={`https://lokocandy.up.railway.app/products/image/${product.prod_img}`} />} */}
                   </CardBody>
-                  <CardFooter>
-                    <h5 style={{ color: '#212121', fontWeight: '700', fontSize: '20px' }}>{product.prod_name}</h5>
+                  <CardFooter className='card-footer'>
+                    <h5 style={{ color: '#212121', fontWeight: '700' }}>{product.prod_name}</h5>
                     <CardSubtitle style={{ color: '#454545', fontSize: '12px' }}>
-                      {product.prod_desc}
+                      {product.prod_desc ? truncateText(product.prod_desc, 18) : '...'}
                     </CardSubtitle>
-                    <CardSubtitle style={{ color: '#426B1F', fontWeight: '500', fontSize: '18px' }}>
+                    <CardSubtitle style={{ color: '#426B1F', fontWeight: '500', fontSize: '20px' }}>
                       ${product.prod_price}
                     </CardSubtitle>
                   </CardFooter>
@@ -497,22 +562,25 @@ function Dashboard() {
                 <div class="product-cell image">
                   {/* <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8a2l0Y2hlbnxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60" alt="product"> */}
                   <span><Button color='secondary' style={{ marginRight: '1rem' }} onClick={toggleCategory}>+</Button></span>
-                  {addCategory &&
-                    <Input
-                      type="text"
-                      placeholder="Agregar categoría"
-                      defaultValue={cat_name}
-                      onChange={(e) => setCat_name(e.target.value)}
-                      style={{ marginRight: '1rem' }} />
-                  }
-                  {addCategory &&
-                    <Button color='success'
-                      disabled={cat_name === ''}
-                      onClick={handleSubmitCategory}
-                    >Agregar
-                    </Button>}
+                  <FormGroup>
+                    {addCategory &&
+                      <Input
+                        type="text"
+                        placeholder="Agregar categoría"
+                        defaultValue={cat_name}
+                        onChange={(e) => setCat_name(e.target.value)}
+                        style={{ marginRight: '1rem', width: '100%', marginBottom: '7px' }} />
+                    }
+                    {addCategory &&
+                      <Button color='success'
+                        disabled={cat_name === ''}
+                        onClick={handleSubmitCategory}
+                        style={{width: '100%'}}
+                      >Agregar
+                      </Button>}
+                  </FormGroup>
+                  <div class="product-cell category"><span class="cell-label"></span></div>
                 </div>
-                <div class="product-cell category"><span class="cell-label"></span></div>
               </div>
             </div>
           }
@@ -570,7 +638,7 @@ function Dashboard() {
           }
 
         </div>
-      </div>)
+      </div >)
   )
 }
 
