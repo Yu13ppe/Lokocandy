@@ -7,13 +7,13 @@ import { Card, CardBody, CardSubtitle, CardFooter, Col, Modal, ModalBody, ModalF
 import { useDataContext } from '../Context/dataContext'
 
 function Main() {
-  const { filteredSearch } = useDataContext();
+  const { filteredSearch, cart, setCart } = useDataContext();
   const [isLoading, setIsLoading] = useState(true);
   const [selectProduct, setSelectProduct] = useState(null);
   const [modal, setModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const toggle = () => setModal(!modal);
+  const toggle = () => { setModal(!modal); setQuantity(1) };
 
   useEffect(() => {
     if (filteredSearch.length > 0) {
@@ -27,6 +27,25 @@ function Main() {
     } else {
       return text;
     }
+  }
+
+  function addToCart() {
+    // Obtener el carrito actual del estado
+    let currentCart = [...cart];
+
+    // Verificar si el producto ya existe en el carrito
+    let existingProduct = currentCart.find(item => item.prod_id === selectProduct.prod_id);
+
+    if (existingProduct) {
+      // Si el producto ya existe, actualizar la cantidad
+      existingProduct.quantity += quantity;
+    } else {
+      // Si el producto no existe, agregarlo al carrito con la cantidad seleccionada
+      currentCart.push({ ...selectProduct, quantity });
+    }
+
+    // Usar setCart para actualizar el estado del carrito
+    setCart(currentCart);
   }
 
   return (
@@ -75,11 +94,11 @@ function Main() {
                     </div>
                     <div style={{ marginLeft: '10px', width: '100%' }} className='ModalBody-Price-Desc'>
                       <h3 style={{ color: '#426B1F', fontWeight: '500', fontSize: '25px' }} className='ModalBody-Price'>${selectProduct ? selectProduct.prod_price : 'Precio'}</h3>
-                      <p style={{ color: '#454545', fontSize: '14px' }} className='ModalBody-Desc'>{selectProduct ? truncateText(selectProduct.prod_desc, 30) : '...'}</p>
+                      <p style={{ color: '#454545', fontSize: '14px' }} className='ModalBody-Desc'>{selectProduct ? `${selectProduct.prod_desc}` : null}</p>
 
                       <div className='d-flex' >
                         <p style={{ color: '#212121', fontSize: '14px', width: '100%' }} className='ModalBody-Desc'>Total:</p>
-                        <p style={{ color: '#212121', fontSize: '14px', justifyContent: 'flex-end' }} className='ModalBody-Desc'>{selectProduct ? selectProduct.prod_price * quantity : 0}</p>
+                        <p style={{ color: '#212121', fontSize: '14px', justifyContent: 'flex-end' }} className='ModalBody-Desc'>{selectProduct ? parseFloat(selectProduct.prod_price * quantity).toFixed(2) : 0}</p>
                       </div>
 
                       <hr style={{ padding: '0 1px', marginBottom: '10px', marginTop: '0' }} />
@@ -96,7 +115,10 @@ function Main() {
                   </ModalBody>
                   <ModalFooter>
                     <button className='btn btn-secondary' onClick={toggle}>Volver</button>
-                    <button className='btn btn-success' onClick={toggle}>Agregar a Carrito</button>
+                    <button className='btn btn-success' onClick={() => {
+                      addToCart();
+                      toggle();
+                    }}>Agregar a Carrito</button>
                   </ModalFooter>
                 </Modal>
 

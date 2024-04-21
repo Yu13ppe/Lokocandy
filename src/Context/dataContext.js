@@ -7,6 +7,7 @@ export const DataContext = createContext();
 export function DataContextProvider(props) {
     const [logged, setLogged] = useLocalStorage('lokoLog', false);
     const [access_token, setAccessAdminToken] = useLocalStorage('13030606', '');
+    const [cart, setCart]= useLocalStorage('cart', []);
     const [search, setSearch] = useState('');
     const url = 'https://lokocandy.up.railway.app';
     const [products, setProducts] = useState([]);
@@ -61,6 +62,7 @@ export function DataContextProvider(props) {
         fetchBrands,
         categoriesList,
         brandsList,
+        cart, setCart,
         access_token, setAccessAdminToken
     };
 
