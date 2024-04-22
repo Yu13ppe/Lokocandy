@@ -9,6 +9,7 @@ export function DataContextProvider(props) {
     const [access_token, setAccessAdminToken] = useLocalStorage('13030606', '');
     const [cart, setCart]= useLocalStorage('cart', []);
     const [search, setSearch] = useState('');
+    const [filter, setFilter] = useState('Todos los productos');
     const url = 'https://lokocandy.up.railway.app';
     const [products, setProducts] = useState([]);
     const [categoriesList, setCategories] = useState([]);
@@ -63,6 +64,7 @@ export function DataContextProvider(props) {
         categoriesList,
         brandsList,
         cart, setCart,
+        filter, setFilter,
         access_token, setAccessAdminToken
     };
 

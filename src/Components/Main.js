@@ -59,7 +59,9 @@ function Main() {
               <img src={LokoC} alt="Loading..." style={{ animation: 'fade 1s infinite' }} />
             </div>
           ) : (
-            filteredSearch.filter(prod => prod.prod_status === 'Activo').map(product => (
+            filteredSearch.filter(prod => prod.prod_status === 'Activo' 
+            // && (filter === 'Todos los productos' || prod.category === filter)
+          ).map(product => (
               <Col className="col" key={product.prod_id}>
                 <Card className='card mt-2 mb-2' style={{ borderRadius: '10px', cursor: 'pointer' }} onClick={() => {
                   setSelectProduct(product);

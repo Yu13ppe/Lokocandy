@@ -4,8 +4,10 @@ import WhatsApp from '../Assets/Images/WhatsApp.png'
 import Instagram from '../Assets/Images/Instagram.png'
 import Gmail from '../Assets/Images/Gmail.png'
 import Gmap from '../Assets/Images/Gmap.png'
+import { useDataContext } from '../Context/dataContext'
 
 function SideBar() {
+  const {setFilter} = useDataContext();
   return (
     <div className='SideBar scrollbar'>
       <div className='SideBar-Items'>
@@ -22,14 +24,14 @@ function SideBar() {
                     <span style={{ fontSize: '15px', color: '#212121' }}>Todos los productos</span>
                   </div>
                 </div>
-                <div role="listitem" className="item">
+                <div role="listitem" className="item" onClick={() => setFilter('Snacks')}>
                   <div className="content categories__item flex ">
                     <div style={{ fontSize: '15px', color: '#212121' }}>
                       Papelería
                     </div>
                   </div>
                 </div>
-                <div role="listitem" className="item">
+                <div role="listitem" className="item" onClick={() => setFilter('Dulce')}>
                   <div className="content categories__item flex ">
                     <div style={{ fontSize: '15px', color: '#212121' }}>
                       Viveres
@@ -53,7 +55,7 @@ function SideBar() {
                 <div className="link__item d-flex ">
                   <img className="icon" alt="WhatsApp" src={WhatsApp} />
                   <div className="content" style={{ cursor: 'pointer' }}>
-                    <a href="https://api.whatsapp.com/send?phone=584126131828&text=Hola,%20este%20es%20mi%20mensaje%20predefinido." style={{ textDecoration: 'none', fontSize: '15px', color: '#212121' }} target="_blank" rel="noreferrer">
+                    <a href="https://api.whatsapp.com/send?phone=584126131828" style={{ textDecoration: 'none', fontSize: '15px', color: '#212121' }} target="_blank" rel="noreferrer">
                       +58 412 6131828
                     </a>
                   </div>
